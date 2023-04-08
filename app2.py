@@ -4,10 +4,10 @@ from dash import html
 import dash_bootstrap_components as dbc
 import pymongo
 from dash import Input, Output, State
-import dash_table
+from dash import dash_table
 import time
 
-client = pymongo.MongoClient('')
+client = pymongo.MongoClient()
 db = client['avaliacaoaplicada']
 nomecol = db['autoavaliacao']
 collection = db['grupo']
@@ -41,15 +41,15 @@ app.layout = html.Div([
                  {'name': 'HABILIDADE TÉCNICA', 'id': 'atributo20', 'editable': True}],
         data=[],
         editable=True,
-        persistence=True,
     ),
     dbc.Button('Salvar', id='save-button', n_clicks=0, className='m-3'),
     html.Div(id='output')
 ])
 
 @app.callback(Output('table', 'data'),
-              Input('table', 'data_timestamp'))
-def update_table(data_timestamp):
+              Input('save-button', 'n_clicks'),
+              State('table', 'data_timestamp'))
+def update_table(n_clicks, data_timestamp):
     nomes = nomecol.find({}, {'_id': 0, 'nome': 1})
     return [{'nomes': nome['nome'], 'atributo1': '', 'atributo2': '', 'atributo3': '', 'atributo4': '', 'atributo5': '',
               'atributo6': '', 'atributo7': '', 'atributo8': '', 'atributo9': '', 'atributo10': '', 'atributo11': '',
